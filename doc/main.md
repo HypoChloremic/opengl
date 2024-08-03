@@ -71,9 +71,10 @@ void main(){
 
 ## Matrices
 
-Instead of xyz triplets, we are now going to handle x,y,z,w vectors. 
+Instead of xyz triplets, we are now going to handle x,y,z,w vectors.
 * if w == 1, then the vector (x,y,z,1) is a position in space
 * if w == 0, then the vector (x,y,z,0) is a direction
+These two rules are essential
 
 Homogenous coordinates allow us to use a single mathematical formula to deal with these two cases, if it is a position or a direction. 
 
@@ -91,3 +92,14 @@ Matrix x Vertex (in this order) = TransformedVertex
 | i j k l |     |z|     | xi + jy+ kz  + lw |
 | m n o p |     |w|     | xm + ny + oz + pw |
 
+#### Translation matrices
+
+Are the most simple
+
+
+| 1 0 0 X |
+| 0 1 0 Y |
+| 0 0 1 Z |
+| 0 0 0 1 |
+
+XYZ are the values we wish to add to the xyz coords in the xyzw vector
