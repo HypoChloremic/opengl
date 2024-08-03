@@ -1,5 +1,24 @@
 # Open Graphics Library
 
+## Installation and setup
+
+Creating a build.sh file
+
+```bash
+#!/bin/bash
+
+CC=g++
+CFLAGS=`pkg-config --cflags glew`
+LDFLAGS=`pkg-config --libs glew`
+LDFLAGS="$LDFLAGS -lglut"
+
+$CC main.cpp $CFLAGS $LDFLAGS -o progr
+```
+
+* pkg-config is a quality of life improver: it finds all outputs all of the relevant flags for the given package we ask for
+* These flags are then used to compile the main.cpp code.
+* There are several packages that are required to run opengl effectively. These have not been specified here, however are made apparent by the compilation of the code etc.
+
 ## Vertex Shading
 
 ```glsl
