@@ -19,7 +19,28 @@ $CC main.cpp $CFLAGS $LDFLAGS -o progr
 * These flags are then used to compile the main.cpp code.
 * There are several packages that are required to run opengl effectively. These have not been specified here, however are made apparent by the compilation of the code etc.
 
+
+## OpenGL pipeline
+1. Vertex input
+2. Tesselation
+3. Geometry shader (not used)
+4. Primitive assembly
+5. Rasterization
+6. Fragment shading
+
+The two more important parts for us are vertex input and fragment shading. 
+
+
 ## Vertex Shading
+
+### Vertex data
+
+Vertex data is data that represent the vertices of the object we wish to pass to opengl.
+
+The vertex data is then processed in the vertex shader, where we perform mathematical calculations to transfer the vertices from the world space to opengl space. 
+
+* Mathematically we achieve this by: $ScreenSpace = Projection \x View \x Transformation \x vertex$
+
 
 ```glsl
 #version 330 core // specifies that we are using opengl version 3.3
