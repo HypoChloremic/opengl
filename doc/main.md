@@ -90,6 +90,58 @@ void main(){
 * vec3(1,0,0) means read. Because on the compt screen, color represented by red green and blue triplets. in this order (1,0,0) therefore means red. 
 
 
+
+
+## Buffers
+
+This is a major subject in opengl
+
+### Introduction
+
+Buffers are data stored in memory. block of memory on the gpu to store vertex data, texture data etc.
+
+#### Different buffers
+
+##### GL_ARRAY_BUFFER
+
+* Most often used to store vertex data
+
+##### GL_ELEMENT_ARRAY_BUFFER
+
+* array of elements, just sized integers. 
+
+##### GL_TEXTURE_BUFFER
+
+* Array of pixels. Usually just an image just like a png or jpg. 
+
+##### Other common buffers 
+* GL_DRAW_INDIRECT_BUFFER: buffer to store rendering commands
+* GL_SHADER_STORAGE_BUFFER: special buffer to pass data to shaders.
+* GL_TRANSFORM_FEEDBACK_BUFFER: complex calculations on the gpu like particle simulations
+* GL_UNIFORM_BUFFER: another buffer to pass data to shaders
+
+
+### Sending vertex data to the gpu
+
+Given that buffers are locations in memory in the gpu, that we can store data in, how can we use it. The following will walkthrough the way we handle vertex data.
+
+#### Create an array buffer
+
+To create an array vuffer, there are three basic commands we will use
+```cpp
+glCreateBuffers(1, &myBufferId);
+glBindBuffer(GL_ARRAY_BUFFER, myBufferId);
+glBufferData(GL_ARRAY_BUFFER, sizeOfMyData, myData, usage);
+```
+
+Note that opengl is a state machine. OpenGl mutates a global state, and we need to tell opengl what we are mutating, by binding for instance buffers to certain objects etc. 
+
+* We need to provide a variable that will hold the bufferid when we create the buffer.
+* The bufferid gives us a way to access the buffer as well. 
+* ***usage***: what is usage; we help opengl by telling it what we intend to do with the buffer. 
+    * GL_STATIC_DRAW: sending data to the gpu only for drawing and not intending to update the data.
+    * GL_DYNAMIC_DRAW: sending data to the gpu that will mutate in the future. 
+
 ## Matrices
 
 Instead of xyz triplets, we are now going to handle x,y,z,w vectors.
