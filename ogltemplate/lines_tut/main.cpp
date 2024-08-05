@@ -23,11 +23,6 @@ void draw_triangle(GLuint* VertexArrayID, GLuint* vertexbuffer){
   static const GLfloat g_vertex_buffer_data[] = {
     -1.0f, -1.0f, 0.0f,
     1.0f, -1.0f, 1.0f,
-    0.0f, 1.0f, 0.0f,
-
-    0.5f, -1.0f, 0.0f,
-    1.0f, -1.0f, 1.0f,
-    0.5f, 1.0f, 0.0f,
   };
 
   glGenBuffers(1, vertexbuffer);
@@ -61,7 +56,7 @@ int main(){
     return -1;
   }
 
-  glClearColor(0.0f, 0.4f, 0.4f, 0.0f);
+  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
   GLuint vertexbuffer;
   GLuint VertexArrayID;
@@ -96,12 +91,8 @@ int main(){
       (void*)0
     );
 
-    glUniform3f(UniformColorID, 1.0f, 0.0f, 0.0f);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-
-
-    glUniform3f(UniformColorID, 0.0f, 1.0f, 0.0f);
-    glDrawArrays(GL_TRIANGLES, 3, 3);
+    glUniform3f(UniformColorID, 0.0f, 1.0f, 1.0f);
+    glDrawArrays(GL_POINTS, 0, 2);
 
     glDisableVertexAttribArray(0);
     glfwSwapBuffers(window);
