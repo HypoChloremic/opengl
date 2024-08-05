@@ -2,6 +2,8 @@
 #define BUFFERING
 
 #include <GL/glew.h>
-void draw_triangle(GLuint* VertexArrayID, GLuint* vertexbuffer);
+#include <vector>
+
+void draw_triangle(GLuint* VertexArrayID, GLuint* vertexbuffer, std::vector<GLfloat>& vertexdata);
 
 #endif
