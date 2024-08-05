@@ -61,7 +61,7 @@ int main(){
     return -1;
   }
 
-  glClearColor(0.0f, 0.4f, 0.4f, 0.0f);
+  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
   GLuint vertexbuffer;
   GLuint VertexArrayID;
@@ -78,7 +78,9 @@ int main(){
   glm::mat4 Model = glm::mat4(1.0f);
   glm::mat4 mvp = Projection * View * Model;
   GLuint MatrixID = glGetUniformLocation(programID, "MVP");
-  GLuint UniformColorID = glGetUniformLocation(programID, "uniformcolor");
+  GLuint UniformColorID = glGetUniformLocation(programID, "uniformcolor"); 
+
+  float i = 0.0f;
 
   do {
     glClear( GL_COLOR_BUFFER_BIT );
@@ -100,12 +102,18 @@ int main(){
     glDrawArrays(GL_TRIANGLES, 0, 3);
 
 
-    glUniform3f(UniformColorID, 0.0f, 1.0f, 0.0f);
+    glUniform3f(UniformColorID, i, 1.0f, 0.0f);
     glDrawArrays(GL_TRIANGLES, 3, 3);
 
     glDisableVertexAttribArray(0);
     glfwSwapBuffers(window);
     glfwPollEvents();
+
+    if(i > 1){
+      i = 0.0f;
+    } else {
+      i += 0.01f;
+    }
 
   } while( 
   glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS 
