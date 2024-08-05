@@ -12,8 +12,8 @@ def process_osm(input_file, output_file):
         file.write(b" ".join(filtered))
 
 if __name__ == "__main__":
-    input_file = "./data/auburn/auburn.osm"
-    output_file = "./data/auburn/raw.bin"
+    input_file = "./data/botkyrka.osm"
+    output_file = "./data/raw.bin"
     try:
         process_osm(input_file, output_file)
     except Exception as e:
