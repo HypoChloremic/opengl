@@ -19,8 +19,8 @@
 using namespace glm;
 
 
-const GLfloat BASE_LAT = 32.6081962; 
-const GLfloat BASE_LON = -85.4744464;
+const GLfloat BASE_LAT = 59.2373418; 
+const GLfloat BASE_LON = 17.8365887;
 
 
 int main(int argc, char** argv){
@@ -94,7 +94,8 @@ int main(int argc, char** argv){
     glm::mat4 ProjectionMatrix = getProjectionMatrix();
     glm::mat4 ViewMatrix = getViewMatrix();
     glm::mat4 ModelMatrix = glm::mat4(1.0);
-    glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+    glm::mat4 RotationMatrix = getRotationMatrix();
+    glm::mat4 MVP = RotationMatrix * ProjectionMatrix * ViewMatrix * ModelMatrix;
 
     glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
