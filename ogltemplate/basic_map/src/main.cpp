@@ -13,38 +13,21 @@
 #include <vector>
 #include "file_handling.hpp"
 #include "buffering.hpp"
+#include "cleaning.hpp"
+#include "controls.hpp"
 
 using namespace glm;
 
-struct Coord {
-  GLfloat lat;
-  GLfloat lon;
-};
+
+const GLfloat BASE_LAT = 32.6081962; 
+const GLfloat BASE_LON = -85.4744464;
+
 
 int main(int argc, char** argv){
   if(argv == nullptr){
     std::cerr << "Missing input file flags"<< std::endl;
   }
-  std::string filename = get_filename(argc, argv);
-  std::ifstream file(filename);
-  std::vector<GLfloat> coordinates;
-  if(file){
-    GLfloat iVal; 
-    while(!file.eof()){
-      file >> iVal;
-      coordinates.push_back(iVal);
-    }
-  } else {
-    std::cerr << "Could not open file: " << filename << std::endl;
-    return -1;
-  }
-  for (const auto& coordinate : coordinates) {
-    std::cout << coordinate << std::endl; 
-  }
-  return 0;
-}
 
-int main1(){
   glewExperimental = true;
   if (!glfwInit()){
     fprintf(stderr, "failed initialize glfw\n");
@@ -71,21 +54,32 @@ int main1(){
   }
 
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-  glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
-  GLuint vertexbuffer;
-  GLuint VertexArrayID;
-  draw_triangle(&VertexArrayID, &vertexbuffer);
+  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+  glfwPollEvents();
+  glfwSetCursorPos(window, 1024/2, 768/2);
+
+  std::string filename = get_filename(argc, argv);
+  std::ifstream file(filename);
+  std::vector<GLfloat> coordinates;
+  if(file){
+    GLfloat iVal; 
+    while(file >> iVal){
+      coordinates.push_back(iVal);
+    }
+  } else {
+    std::cerr << "Could not open file: " << filename << std::endl;
+    return -1;
+  }
+
+  normalize_coords(coordinates, BASE_LAT, BASE_LON);
+
+  GLuint vertexbuffer, VertexArrayID;
+  draw_triangle(&VertexArrayID, &vertexbuffer, coordinates);
 
   GLuint programID = LoadShaders("./shaders/vertex_shader.vert", "./shaders/fragment_shader.frag");
+  // glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
   glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
-  glm::mat4 View = glm::lookAt(
-    glm::vec3(10,3,3),
-    glm::vec3(0,0,0),
-    glm::vec3(0,2,0)
-  );
 
-  glm::mat4 Model = glm::mat4(1.0f);
-  glm::mat4 mvp = Projection * View * Model;
   GLuint MatrixID = glGetUniformLocation(programID, "MVP");
   GLuint UniformColorID = glGetUniformLocation(programID, "uniformcolor"); 
 
@@ -94,13 +88,21 @@ int main1(){
   do {
     glClear( GL_COLOR_BUFFER_BIT );
     glUseProgram(programID);
-    glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp[0][0]);
+    
+    // Compute the MVP matrix from keyboard and mouse input
+    computeMatricesFromInputs(window);
+    glm::mat4 ProjectionMatrix = getProjectionMatrix();
+    glm::mat4 ViewMatrix = getViewMatrix();
+    glm::mat4 ModelMatrix = glm::mat4(1.0);
+    glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+
+    glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
     glVertexAttribPointer(
       0,
-      3,
+      2,
       GL_FLOAT,
       GL_FALSE,
       0,
@@ -108,11 +110,7 @@ int main1(){
     );
 
     glUniform3f(UniformColorID, 1.0f, 0.0f, 0.0f);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-
-
-    glUniform3f(UniformColorID, i, 1.0f, 0.0f);
-    glDrawArrays(GL_TRIANGLES, 3, 3);
+    glDrawArrays(GL_POINTS, 0, coordinates.size()/2);
 
     glDisableVertexAttribArray(0);
     glfwSwapBuffers(window);
