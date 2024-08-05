@@ -141,6 +141,61 @@ Note that opengl is a state machine. OpenGl mutates a global state, and we need 
 * ***usage***: what is usage; we help opengl by telling it what we intend to do with the buffer. 
     * GL_STATIC_DRAW: sending data to the gpu only for drawing and not intending to update the data.
     * GL_DYNAMIC_DRAW: sending data to the gpu that will mutate in the future. 
+    * Note that there are usage types, that are specified in the documentation, to indicate what we wish to do with the buffer.
+
+### Using the data that we have passed to the gpu
+
+Now that we have created a buffer, bound it, and passed data to it, in the gpu, how can we use it.
+
+Shaders enter here. It is the shaders that are the operators that will utilize the passed buffer data to generate results in opengl. 
+
+
+```cpp
+struct Vertex {
+    vec3 position;
+    vec4 color;
+}
+```
+
+Then in the vertex shader
+./vertex_shader.vert
+```glsl
+#version 430 core
+layout(location=0) in vec3 aPosition;
+layout(location=1) in vec4 aColor;
+
+out vec4 fColor;
+```
+
+So what is going on in the shader.
+* Layout: We specificy a certain layout, we expect vertex attribute in the specific locations.
+* aPosition and aColor represent a(ttribute).
+
+
+To tell the shader what is the position and what is the color, we will use something called
+`glVertexAttribPointer`
+
+#### glVertexAttribPointer
+
+This function:
+```
+glVertexAttribPointer(
+    GLuint index,
+    GLint size,
+    GLenum type,
+    GLboolean normalized,
+    GLsizei stride,
+    const void* pointer
+)
+```
+* index: is the location value we specified in the shader. This corresponds in this case to aPosition at location 0 or aColor at location 1. 
+* size: the size of the attribute, if it is a vec3 then it is 3, if vec4 then it is 4, 1-4 are the allowed values here
+* type: type of data being passed in, if vec3, then we the type  would be GL_FLOAT
+* GLboolean normalized: if we would like to normalize the data or not... we could pass GL_FALSE here
+* stride: determines how many bytes each vertex is. 
+    * if vertex = struct Vertex{vec3 position; vec4 color;}
+    * then stride = siezof(float) * 3 + sizeof(float) * 4
+    * or more succinctly: sizeof(Vertex)
 
 ## Matrices
 
